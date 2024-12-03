@@ -1,5 +1,6 @@
-import strutils
 import algorithm
+import sequtils
+import strutils
 
 type
   intSeq = seq[int]
@@ -45,8 +46,7 @@ proc tupleDistance(t: tuple): int =
 
 
 proc totalTupleSeqDistance(tupleSeq: intTupleSeq): int =
-  var
-    totalDistance: int = 0
+  var totalDistance: int = 0
 
   for intTuple in tupleSeq:
     totalDistance = totalDistance + tupleDistance(intTuple)
@@ -54,8 +54,26 @@ proc totalTupleSeqDistance(tupleSeq: intTupleSeq): int =
   return totalDistance
 
 
+proc intToIntSeqSimilarity(int: int, intSeq: intSeq): int =
+  var filteredSeq: intSeq
+  
+  filteredSeq = filter(intSeq, proc(x: int): bool = x == int)
+  
+  return int * len(filteredSeq)
+
+
+proc totalSimilarityScore(list1: intSeq, list2: intSeq): int =
+  var totalSimilarity: int = 0
+
+  for int in list1:
+    totalSimilarity = totalSimilarity + intToIntSeqSimilarity(int, list2)
+    
+  return totalSimilarity
+
+
 block main:
-  var totalDistance: int
+  var
+    totalDistance, similarityScore: int
 
   for line in splitLines(input):
     if line != "":
@@ -67,4 +85,8 @@ block main:
   totalDistance = totalTupleSeqDistance(intSeqToTupleSeq(lX, lY))
   
   echo "Total distance: ", totalDistance
+
+  similarityScore = totalSimilarityScore(lX, lY)
+  
+  echo "Total similarity score: ", similarityScore
 
